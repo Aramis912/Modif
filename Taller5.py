@@ -2,24 +2,29 @@ import redis
 import json
 import os
 import sys
-from uuid import uuid4 # Usaremos un UUID para generar IDs únicos para cada libro
+from uuid import uuid4
+from dotenv import load_dotenv 
 
-# --- 1. Configuración del Almacén en Memoria (KeyDB/Redis) ---
-# Usaremos variables de entorno para la configuración, si no están, usa la local por defecto
+
+load_dotenv()
+
+
 REDIS_HOST = os.getenv('REDIS_HOST', 'localhost')
 REDIS_PORT = int(os.getenv('REDIS_PORT', 6379))
 REDIS_DB = int(os.getenv('REDIS_DB', 0))
 
-# Clave de Redis para el contador de IDs o un set/list para IDs
-KEY_PREFIX = "libro:" # Prefijo para la clave de cada libro (Hash o String)
-ALL_BOOKS_KEY = "libros:ids" # Usaremos un SET de Redis para almacenar todos los IDs de los libros.
+
+
+KEY_PREFIX = "libro:" 
+ALL_BOOKS_KEY = "libros:ids"
 
 # --- 2. Conexión y Cliente ---
 def get_redis_client():
     """Establece la conexión a KeyDB/Redis y retorna el cliente."""
     try:
-        # 1. Crear el cliente
+      
         client = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_DB, socket_timeout=5)
+       
 
         # 2. Verificar la conexión inmediatamente (ping)
         client.ping()
